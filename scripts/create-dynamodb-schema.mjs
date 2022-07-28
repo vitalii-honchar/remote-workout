@@ -4,32 +4,21 @@ const tables = [
     {
         AttributeDefinitions: [
             {
-                AttributeName: "Season", //ATTRIBUTE_NAME_1
-                AttributeType: "N", //ATTRIBUTE_TYPE
-            },
-            {
-                AttributeName: "Episode", //ATTRIBUTE_NAME_2
-                AttributeType: "N", //ATTRIBUTE_TYPE
+                AttributeName: "Username",
+                AttributeType: "S"
             },
         ],
         KeySchema: [
             {
-                AttributeName: "Season", //ATTRIBUTE_NAME_1
+                AttributeName: "Username",
                 KeyType: "HASH",
-            },
-            {
-                AttributeName: "Episode", //ATTRIBUTE_NAME_2
-                KeyType: "RANGE",
             },
         ],
         ProvisionedThroughput: {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1,
         },
-        TableName: "TEST_TABLE", //TABLE_NAME
-        StreamSpecification: {
-            StreamEnabled: false,
-        },
+        TableName: "Coach"
     }
 ]
 
@@ -46,7 +35,7 @@ const createSchema = async (configuration) => {
 
         for (const table of tables) {
             if (!existsTables.includes(table['TableName'])) {
-                console.log(`Creation table ${table['TableName']}`)
+                console.log(`Creation table '${table['TableName']}'`)
                 await client.send(new CreateTableCommand(table))
             }
         }
