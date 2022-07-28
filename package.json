@@ -2,14 +2,14 @@
   "name": "remote-workout",
   "version": "1.0.0",
   "description": "This project was bootstrapped with Fastify-CLI.",
-  "main": "app.js",
+  "main": "main/app.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "tap \"test/**/*.test.js\"",
-    "start": "fastify start -l info app.js",
-    "dev": "fastify start -w -l info -P app.js"
+    "start": "fastify start -l info main/app.js",
+    "dev": "fastify start -w -l info -P main/app.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.137.0",
     "@fastify/autoload": "^5.0.0",
+    "@fastify/basic-auth": "^4.0.0",
     "@fastify/sensible": "^4.1.0",
     "bcrypt": "^5.0.1",
     "crypto": "^1.0.1",
