@@ -1,8 +1,7 @@
 
 class Coach {
-    constructor(id, login, password) {
-        this.id = id
-        this.login = login
+    constructor(username, password) {
+        this.username = username
         this.password = password
     }
 }
