@@ -7,7 +7,7 @@ const authenticationPlugin = async function (fastify) {
         return await diContainer.resolve('authenticationService')
             .authenticate(username, password)
     }
-    fastify.register(fastifyBasicAuth, { validate: validate, authenticate: {} })
+    fastify.register(fastifyBasicAuth, { validate: validate, authenticate: false })
 
     fastify.after(() => fastify.addHook('onRequest', fastify.basicAuth))
 }

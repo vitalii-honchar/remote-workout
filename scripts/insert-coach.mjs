@@ -2,9 +2,8 @@ import {DynamoDBClient, PutItemCommand, GetItemCommand} from '@aws-sdk/client-dy
 import {withLocalClient} from "./lib/dynamodb.mjs";
 import randomPassword from "./lib/random-password.mjs";
 
-const insertCoach = async () => {
-    const username = 'admin'
-    const password = await randomPassword()
+const insertCoach = async (username = 'admin', password = null) => {
+    const coachPassword = await randomPassword(password)
     await withLocalClient(async (client) => {
         const coach = {
             TableName: 'Coach',
@@ -13,7 +12,7 @@ const insertCoach = async () => {
                     S: username
                 },
                 Password: {
-                    S: password.hash
+                    S: coachPassword.hash
                 },
                 Description: {
                     S: 'hello'
@@ -25,7 +24,7 @@ const insertCoach = async () => {
     })
 
     console.log('Inserted coach:')
-    console.dir({ username: username, password: password.raw })
+    console.dir({ username: username, password: coachPassword.raw })
 }
 
-await insertCoach()
+await insertCoach('test', 'test')
