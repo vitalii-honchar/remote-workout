@@ -7,3 +7,27 @@ Authorization: Basic dGVzdDp0ZXN0
 ### Get price by name
 GET http://127.0.0.1:3000/price/test-price-86
 Authorization: Basic dGVzdDp0ZXN0
+
+### Create price plan
+PUT http://127.0.0.1:3000/price
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "coach": "test",
+  "name": "hello-world",
+  "price": 1200,
+  "workouts": 12
+}
+
+### Update price plan
+POST http://127.0.0.1:3000/price/hello-world
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "coach": "test",
+  "name": "hello-world-123",
+  "price": 1200,
+  "workouts": 12
+}
