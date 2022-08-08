@@ -8,4 +8,9 @@ export default async (fastify) => {
     fastify.get('/price', async function (request) {
         return await pricePlanService.findAll(httpSession(request).coach)
     })
+
+    fastify.get('/price/:name', async function (request) {
+        const { name } = request.params
+        return await pricePlanService.findByCoachAndName(httpSession(request).coach, name)
+    })
 }

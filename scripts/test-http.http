@@ -1,3 +1,9 @@
 
+### Get all prices
 GET http://127.0.0.1:3000/price
+Authorization: Basic dGVzdDp0ZXN0
+
+
+### Get price by name
+GET http://127.0.0.1:3000/price/test-price-86
 Authorization: Basic dGVzdDp0ZXN0

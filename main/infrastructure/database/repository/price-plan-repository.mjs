@@ -1,4 +1,4 @@
-import {QueryCommand} from "@aws-sdk/client-dynamodb"
+import {GetItemCommand, QueryCommand} from "@aws-sdk/client-dynamodb"
 import PricePlan from "../../../domain/price-plan.mjs"
 
 const TABLE_PRICE_PLAN = 'PricePlan'
@@ -20,10 +20,23 @@ export default class PricePlanRepository {
                 ":coach": { S: coach }
             }
         }
-        this.log.info(`Find price plan by coach: coach = ${coach}`)
         const result = await this.dynamoDb.send(new QueryCommand(query))
-        const pricePlans = result.Items.map(item => convertItemToPricePlan(item))
-        this.log.info(`Found price plan by coach: coach = ${coach}, result = ${JSON.stringify(pricePlans)}`)
-        return pricePlans
+        return result.Items.map(item => convertItemToPricePlan(item))
+    }
+
+    async findByCoachAndName(coach, name) {
+        const query = {
+            TableName: TABLE_PRICE_PLAN,
+            Key: {
+                Coach: {
+                    S: coach
+                },
+                Name: {
+                    S: name
+                }
+            }
+        }
+        const result = await this.dynamoDb.send(new GetItemCommand(query))
+        return convertItemToPricePlan(result.Item)
     }
 }
