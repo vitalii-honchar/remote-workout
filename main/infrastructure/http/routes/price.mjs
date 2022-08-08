@@ -4,6 +4,7 @@ import PricePlan from "../../../domain/price-plan.mjs"
 export default async (fastify) => {
     const pricePlanService = diContainer.resolve('pricePlanService')
     const httpSession = (request) => request.diScope.resolve('httpSession')
+    const successResponse = () => { return { success: true } }
 
     const createPricePlan = (body) => {
         return new PricePlan(body.coach, body.name, body.price, body.workouts)
@@ -21,7 +22,7 @@ export default async (fastify) => {
     fastify.put('/price', async function (request) {
         const pricePlan = createPricePlan(request.body)
         await pricePlanService.create(pricePlan)
-        return {success: true}
+        return successResponse()
     })
 
     fastify.post('/price/:name', async function (request) {
@@ -32,7 +33,7 @@ export default async (fastify) => {
 
     fastify.delete('/price/:name', async function (request) {
         const {name} = request.params
-        await pricePlanService.delete(httpSession(request).coach, name)
-        return {success: true}
+        await pricePlanService.deleteByCoachAndName(httpSession(request).coach, name)
+        return successResponse()
     })
 }

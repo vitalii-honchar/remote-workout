@@ -31,3 +31,8 @@ Content-Type: application/json
   "price": 1200,
   "workouts": 12
 }
+
+### Delete price plan
+DELETE http://127.0.0.1:3000/price/test-price-99
+Authorization: Basic dGVzdDp0ZXN0
+
