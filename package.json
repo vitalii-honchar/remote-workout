@@ -25,7 +25,9 @@
     "crypto": "^1.0.1",
     "fastify": "^4.0.0",
     "fastify-cli": "^4.3.0",
-    "fastify-plugin": "^3.0.0"
+    "fastify-plugin": "^3.0.0",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.7"
   },
   "devDependencies": {
     "tap": "^16.1.0"

@@ -1,9 +1,8 @@
 
 class PricePlan {
 
-    constructor(id, coachId, name, price, workouts) {
-        this.id = id
-        this.coachId = coachId
+    constructor(coach, name, price, workouts) {
+        this.coach = coach
         this.name = name
         this.price = price
         this.workouts = workouts

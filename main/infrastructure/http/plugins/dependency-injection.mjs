@@ -2,9 +2,11 @@ import fp from 'fastify-plugin'
 import {fastifyAwilixPlugin, diContainer} from "@fastify/awilix";
 import {asClass, asValue, Lifetime, InjectionMode, asFunction} from "awilix";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
+import HttpSession from "../http-session.mjs"
+import {createHttpSessionResolver} from "./authentication.mjs"
 
 const dependecyInjection = async function (fastify) {
-    fastify.register(fastifyAwilixPlugin, {disposeOnClose: true, disposeOnResponse: false})
+    fastify.register(fastifyAwilixPlugin, {disposeOnClose: true, disposeOnResponse: true})
 
     await diContainer.loadModules(
         [
@@ -37,6 +39,8 @@ const dependecyInjection = async function (fastify) {
             )
         ).disposer(client => client.destroy())
     })
+
+    fastify.addHook('onRequest', createHttpSessionResolver())
 }
 
 export default fp(dependecyInjection)
