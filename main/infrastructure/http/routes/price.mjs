@@ -6,8 +6,8 @@ export default async (fastify) => {
     const httpSession = (request) => request.diScope.resolve('httpSession')
     const successResponse = () => { return { success: true } }
 
-    const createPricePlan = (body) => {
-        return new PricePlan(body.coach, body.name, body.price, body.workouts)
+    const createPricePlan = (body, coach) => {
+        return new PricePlan(coach, body.name, body.price, body.workouts)
     }
 
     fastify.get('/price', async function (request) {
@@ -20,13 +20,13 @@ export default async (fastify) => {
     })
 
     fastify.put('/price', async function (request) {
-        const pricePlan = createPricePlan(request.body)
+        const pricePlan = createPricePlan(request.body, httpSession(request).coach)
         await pricePlanService.create(pricePlan)
         return successResponse()
     })
 
     fastify.post('/price/:name', async function (request) {
-        const pricePlan = createPricePlan(request.body)
+        const pricePlan = createPricePlan(request.body, httpSession(request).coach)
         await pricePlanService.update(pricePlan)
         return {success: true}
     })
