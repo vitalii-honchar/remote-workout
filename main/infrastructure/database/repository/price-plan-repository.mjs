@@ -1,4 +1,10 @@
-import {DeleteItemCommand, GetItemCommand, PutItemCommand, QueryCommand} from "@aws-sdk/client-dynamodb"
+import {
+    DeleteItemCommand,
+    GetItemCommand,
+    PutItemCommand,
+    QueryCommand,
+    UpdateItemCommand
+} from "@aws-sdk/client-dynamodb"
 import PricePlan from "../../../domain/price-plan.mjs"
 
 const TABLE_PRICE_PLAN = 'PricePlan'
@@ -68,9 +74,26 @@ export default class PricePlanRepository {
     async update(pricePlan) {
         const query = {
             TableName: TABLE_PRICE_PLAN,
-            Item: convertPricePlanToItem(pricePlan)
+            Key: {
+                Coach: {
+                    S: pricePlan.coach
+                },
+                Name: {
+                    S: pricePlan.name
+                }
+            },
+            UpdateExpression: "set Price = :price, Workouts = :workouts",
+            ExpressionAttributeValues: {
+                ":price": {
+                    N: pricePlan.price
+                },
+                ":workouts": {
+                    N: pricePlan.workouts
+                }
+            },
+            ReturnValues: 'ALL_NEW'
         }
-        return this.dynamoDb.send(new PutItemCommand(query))
+        return this.dynamoDb.send(new UpdateItemCommand(query))
     }
 
     async delete(coach, name) {

@@ -20,15 +20,15 @@ Content-Type: application/json
 }
 
 ### Update price plan
-POST http://127.0.0.1:3000/price/hello-world
+POST http://127.0.0.1:3000/price/hello-asd
 Authorization: Basic dGVzdDp0ZXN0
 Content-Type: application/json
 
 {
   "coach": "test",
   "name": "hello-world-123",
-  "price": 1200,
-  "workouts": 12
+  "price": 1300,
+  "workouts": 1300
 }
 
 ### Delete price plan
