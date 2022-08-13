@@ -2,8 +2,27 @@ import fp from 'fastify-plugin'
 import {fastifyAwilixPlugin, diContainer} from "@fastify/awilix";
 import {asClass, asValue, Lifetime, InjectionMode, asFunction} from "awilix";
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import HttpSession from "../http-session.mjs"
 import {createHttpSessionResolver} from "./authentication.mjs"
+
+const readConfig = () => {
+    const readDynamoDbConfig = () => {
+        const config = {
+            region: process.env.AWS_REGION,
+            credentials: {
+                accessKeyId: process.env.ACCESS_KEY_ID,
+                secretAccessKey: process.env.SECRET_ACCESS_KEY
+            }
+        }
+        if (process.env.DYNAMO_DB_ENDPOINT) {
+            config.endpoint = process.env.DYNAMO_DB_ENDPOINT
+        }
+        return config
+    }
+
+    return {
+        dynamoDbConfig: readDynamoDbConfig()
+    }
+}
 
 const dependecyInjection = async function (fastify) {
     fastify.register(fastifyAwilixPlugin, {disposeOnClose: true, disposeOnResponse: true})
@@ -26,18 +45,9 @@ const dependecyInjection = async function (fastify) {
 
     await diContainer.register({
         log: asValue(fastify.log),
-        dynamoDb: asFunction(() =>
-            new DynamoDBClient(
-                {
-                    endpoint: "http://localhost:8000",
-                    region: "eu-west-3",
-                    credentials: {
-                        accessKeyId: 'AKIARJNULBG3CS7AGQ7M',
-                        secretAccessKey: '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'
-                    }
-                }
-            )
-        ).disposer(client => client.destroy())
+        config: asValue(readConfig()),
+        dynamoDb: asFunction(({config}) =>  new DynamoDBClient(config.dynamoDb))
+            .disposer(client => client.destroy())
     })
 
     fastify.addHook('onRequest', createHttpSessionResolver())
