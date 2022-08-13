@@ -1,4 +1,10 @@
-import {GetItemCommand, PutItemCommand, QueryCommand, UpdateItemCommand} from "@aws-sdk/client-dynamodb"
+import {
+    DeleteItemCommand,
+    GetItemCommand,
+    PutItemCommand,
+    QueryCommand,
+    UpdateItemCommand
+} from "@aws-sdk/client-dynamodb"
 import Workout, {WorkoutVideo} from "../../../domain/workout.mjs"
 
 const TABLE_WORKOUT = 'Workout'
@@ -89,5 +95,17 @@ export default class WorkoutRepository {
             ReturnValues: 'ALL_NEW'
         }
         return await this.dynamoDb.send(new UpdateItemCommand(command))
+    }
+
+    async delete(coach, id) {
+        const command = {
+            TableName: TABLE_WORKOUT,
+            Key: {
+                Coach: { S: coach },
+                Id: { N: id }
+            }
+        }
+
+        return await this.dynamoDb.send(new DeleteItemCommand(command))
     }
 }

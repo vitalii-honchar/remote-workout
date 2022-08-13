@@ -28,7 +28,9 @@ export default class WorkoutService {
         this.log.info(`Updated workout: workout = ${workout}`)
     }
 
-    async deleteByCoachAndCreatedAt() {
-
+    async deleteByCoachAndCreatedAt(coach, id) {
+        this.log.info(`Delete workout: coach = ${coach}, id = ${id}`)
+        await this.workoutRepository.delete(coach, id)
+        this.log.info(`Deleted workout: coach = ${coach}, id = ${id}`)
     }
 }

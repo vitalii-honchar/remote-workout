@@ -34,4 +34,10 @@ export default async (fastify) => {
         await workoutService.update(workout)
         return successResponse()
     })
+
+    fastify.delete('/workout/:id', async (request) => {
+        const {id} = request.params
+        await workoutService.deleteByCoachAndCreatedAt(httpSession(request).coach, parseInt(id))
+        return successResponse()
+    })
 }
