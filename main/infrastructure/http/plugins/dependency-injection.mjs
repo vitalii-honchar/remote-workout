@@ -46,7 +46,7 @@ const dependecyInjection = async function (fastify) {
     await diContainer.register({
         log: asValue(fastify.log),
         config: asValue(readConfig()),
-        dynamoDb: asFunction(({config}) =>  new DynamoDBClient(config.dynamoDb))
+        dynamoDb: asFunction(({config}) => new DynamoDBClient(config.dynamoDb))
             .disposer(client => client.destroy())
     })
 
