@@ -1,4 +1,4 @@
-import {GetItemCommand, PutItemCommand, QueryCommand} from "@aws-sdk/client-dynamodb"
+import {GetItemCommand, PutItemCommand, QueryCommand, UpdateItemCommand} from "@aws-sdk/client-dynamodb"
 import Workout, {WorkoutVideo} from "../../../domain/workout.mjs"
 
 const TABLE_WORKOUT = 'Workout'
@@ -68,5 +68,26 @@ export default class WorkoutRepository {
         }
         const result = await this.dynamoDb.send(new GetItemCommand(query))
         return convertItemToWorkout(result.Item)
+    }
+
+    async update(workout) {
+        const command = {
+            TableName: TABLE_WORKOUT,
+            Key: {
+                Coach: { S: workout.coach },
+                Id: { N: workout.id }
+            },
+            UpdateExpression: "set #n = :name, Description = :description, Videos = :videos",
+            ExpressionAttributeValues: {
+                ":name": { S: workout.name},
+                ":description": { S: workout.description },
+                ":videos": { SS: workout.videos.map(v => v.link) }
+            },
+            ExpressionAttributeNames: {
+                "#n": "Name"
+            },
+            ReturnValues: 'ALL_NEW'
+        }
+        return await this.dynamoDb.send(new UpdateItemCommand(command))
     }
 }

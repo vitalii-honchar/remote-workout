@@ -18,12 +18,20 @@ export default async (fastify) => {
 
     fastify.get('/workout/:id', async (request) => {
         const {id} = request.params
-        return await workoutService.findByCoachAndId(httpSession(request).coach, id)
+        return await workoutService.findByCoachAndId(httpSession(request).coach, parseInt(id))
     })
 
     fastify.put('/workout', async (request) => {
         const workout = createWorkout(request.body, httpSession(request).coach)
         await workoutService.create(workout)
+        return successResponse()
+    })
+
+    fastify.post('/workout/:id', async (request) => {
+        const workout = createWorkout(request.body, httpSession(request).coach)
+        const {id} = request.params
+        workout.id = parseInt(id)
+        await workoutService.update(workout)
         return successResponse()
     })
 }

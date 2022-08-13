@@ -43,3 +43,21 @@ Content-Type: application/json
 GET http://127.0.0.1:3000/workout/1
 Authorization: Basic dGVzdDp0ZXN0
 Content-Type: application/json
+
+### Update workout
+POST http://127.0.0.1:3000/workout/5
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "name": "workout-1",
+  "description": "simple-workout",
+  "videos": [
+    {
+      "link": "video-1"
+    },
+    {
+      "link": "video-2"
+    }
+  ]
+}
