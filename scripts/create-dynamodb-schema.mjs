@@ -46,6 +46,33 @@ const tables = [
             WriteCapacityUnits: 1,
         },
         TableName: "PricePlan"
+    },
+    {
+        AttributeDefinitions: [
+            {
+                AttributeName: "Coach",
+                AttributeType: "S"
+            },
+            {
+                AttributeName: "Id",
+                AttributeType: "N"
+            },
+        ],
+        KeySchema: [
+            {
+                AttributeName: "Coach",
+                KeyType: "HASH",
+            },
+            {
+                AttributeName: "Id",
+                KeyType: "RANGE",
+            },
+        ],
+        ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
+        },
+        TableName: "Workout"
     }
 ]
 

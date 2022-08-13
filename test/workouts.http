@@ -1,0 +1,45 @@
+### Create workout 1
+PUT http://127.0.0.1:3000/workout
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "name": "workout-1",
+  "description": "simple-workout",
+  "videos": [
+    {
+      "link": "video-1"
+    },
+    {
+      "link": "video-2"
+    }
+  ]
+}
+
+### Create workout 2
+PUT http://127.0.0.1:3000/workout
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "name": "workout-2",
+  "description": "not-simple-workout",
+  "videos": [
+    {
+      "link": "video-3"
+    },
+    {
+      "link": "video-4"
+    }
+  ]
+}
+
+### Get workouts
+GET http://127.0.0.1:3000/workout
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+### Get workout by id
+GET http://127.0.0.1:3000/workout/1
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
