@@ -1,0 +1,49 @@
+### Create price plan 1
+PUT http://127.0.0.1:3000/price
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "name": "price-plan-1",
+  "price": 1200,
+  "workouts": 12
+}
+
+### Create price plan 2
+PUT http://127.0.0.1:3000/price
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "name": "price-plan-2",
+  "price": 800,
+  "workouts": 10
+}
+
+
+### Get all prices
+GET http://127.0.0.1:3000/price
+Authorization: Basic dGVzdDp0ZXN0
+
+
+### Get price by name
+GET http://127.0.0.1:3000/price/price-plan-2
+Authorization: Basic dGVzdDp0ZXN0
+
+
+### Update price plan
+POST http://127.0.0.1:3000/price/price-plan-2
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json
+
+{
+  "coach": "test",
+  "name": "hello-world-123",
+  "price": 1300,
+  "workouts": 1300
+}
+
+### Delete price plan
+DELETE http://127.0.0.1:3000/price/price-plan-1
+Authorization: Basic dGVzdDp0ZXN0
+
