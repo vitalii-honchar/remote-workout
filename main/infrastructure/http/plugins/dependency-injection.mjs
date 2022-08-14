@@ -20,7 +20,7 @@ const readConfig = () => {
     }
 
     return {
-        dynamoDbConfig: readDynamoDbConfig()
+        dynamoDb: readDynamoDbConfig()
     }
 }
 
@@ -47,6 +47,7 @@ const dependecyInjection = async function (fastify) {
         log: asValue(fastify.log),
         config: asValue(readConfig()),
         dynamoDb: asFunction(({config}) => new DynamoDBClient(config.dynamoDb))
+            .singleton()
             .disposer(client => client.destroy())
     })
 
