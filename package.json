@@ -9,8 +9,8 @@
   "scripts": {
     "test": "tap \"test/**/*.test.js\"",
     "build": "npm install && npm audit fix && npm cache clean --force",
-    "start": "fastify start -l info main/app.js",
-    "dev": "fastify start -w -l info -P main/app.js",
+    "start": "fastify start -L logger.config.js main/app.js",
+    "dev": "fastify start -w -L logger.config.js main/app.js",
     "dockerBuild": "docker build -t weaxme/pet-project:remote-workout-$npm_package_version.$(git rev-list HEAD --count) ."
   },
   "keywords": [],
