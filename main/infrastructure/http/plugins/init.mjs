@@ -24,7 +24,7 @@ const readConfig = () => {
     }
 }
 
-const dependecyInjection = async function (fastify) {
+const init = async function (fastify) {
     fastify.register(fastifyAwilixPlugin, {disposeOnClose: true, disposeOnResponse: true})
 
     await diContainer.loadModules(
@@ -54,4 +54,4 @@ const dependecyInjection = async function (fastify) {
     fastify.addHook('onRequest', createHttpSessionResolver())
 }
 
-export default fp(dependecyInjection)
+export default fp(init)
