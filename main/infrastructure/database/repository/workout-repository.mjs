@@ -28,7 +28,7 @@ export default class WorkoutRepository {
             TableName: TABLE_WORKOUT,
             Item: {
                 Coach: {S: workout.coach},
-                Id: {N: workout.id},
+                Id: {N: `${workout.id}`},
                 Name: {S: workout.name},
                 Description: {S: workout.description},
                 Videos: {SS: workout.videos.map(v => v.link)}
