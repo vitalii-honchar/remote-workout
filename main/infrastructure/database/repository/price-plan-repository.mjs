@@ -20,10 +20,10 @@ const convertPricePlanToItem = (pricePlan) => {
             S: pricePlan.name
         },
         Price: {
-            N: pricePlan.price
+            N: `${pricePlan.price}`
         },
         Workouts: {
-            N: pricePlan.workouts
+            N: `${pricePlan.workouts}`
         }
     }
 }
@@ -85,10 +85,10 @@ export default class PricePlanRepository {
             UpdateExpression: "set Price = :price, Workouts = :workouts",
             ExpressionAttributeValues: {
                 ":price": {
-                    N: pricePlan.price
+                    N: `${pricePlan.price}`
                 },
                 ":workouts": {
-                    N: pricePlan.workouts
+                    N: `${pricePlan.workouts}`
                 }
             },
             ReturnValues: 'ALL_NEW'
