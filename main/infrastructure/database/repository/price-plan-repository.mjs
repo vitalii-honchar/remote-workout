@@ -20,10 +20,10 @@ const convertPricePlanToItem = (pricePlan) => {
             S: pricePlan.name
         },
         Price: {
-            N: pricePlan.price
+            N: `${pricePlan.price}`
         },
         Workouts: {
-            N: pricePlan.workouts
+            N: `${pricePlan.workouts}`
         }
     }
 }
