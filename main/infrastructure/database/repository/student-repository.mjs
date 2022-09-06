@@ -10,8 +10,8 @@ import Student from "../../../domain/student.mjs"
 const TABLE_STUDENT = 'Student'
 
 const convertItemToStudent = (item) => new Student(
-    item.Coach.S,
     parseInt(item.Id.N),
+    item.Coach.S,
     item.FirstName.S,
     item.LastName.S
 )
