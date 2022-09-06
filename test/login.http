@@ -1,0 +1,4 @@
+### Create price plan 1
+GET http://54.186.107.129:3000/api/auth/login
+Authorization: Basic dGVzdDp0ZXN0
+Content-Type: application/json

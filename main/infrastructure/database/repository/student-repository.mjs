@@ -5,33 +5,31 @@ import {
     QueryCommand,
     UpdateItemCommand
 } from "@aws-sdk/client-dynamodb"
-import Workout, {WorkoutVideo} from "../../../domain/workout.mjs"
+import Student from "../../../domain/student.mjs"
 
-const TABLE_WORKOUT = 'Workout'
+const TABLE_STUDENT = 'Student'
 
-const convertItemToWorkout = (item) => new Workout(
-    item.Coach.S,
+const convertItemToStudent = (item) => new Student(
     parseInt(item.Id.N),
-    item.Name.S,
-    item.Description.S,
-    item.Videos.SS.map(v => new WorkoutVideo(v))
+    item.Coach.S,
+    item.FirstName.S,
+    item.LastName.S
 )
 
-export default class WorkoutRepository {
+export default class StudentRepository {
     constructor(dynamoDb, log) {
         this.dynamoDb = dynamoDb
         this.log = log
     }
 
-    async create(workout) {
+    async create(student) {
         const command = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             Item: {
-                Coach: {S: workout.coach},
-                Id: {N: `${workout.id}`},
-                Name: {S: workout.name},
-                Description: {S: workout.description},
-                Videos: {SS: workout.videos.map(v => v.link)}
+                Coach: {S: student.coach},
+                Id: {N: `${student.id}`},
+                FirstName: {S: student.firstName},
+                LastName: {S: student.lastName}
             }
         }
         return this.dynamoDb.send(new PutItemCommand(command))
@@ -39,7 +37,7 @@ export default class WorkoutRepository {
 
     async findLastId(coach) {
         const query = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             KeyConditionExpression: "Coach = :coach",
             ExpressionAttributeValues: {
                 ":coach": {S: coach}
@@ -52,45 +50,41 @@ export default class WorkoutRepository {
         return result.Items.length > 0 ? parseInt(result.Items[0].Id.N) : null
     }
 
-    async findAll(coach) {
+    async findAllByCoach(coach) {
         const query = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             KeyConditionExpression: "Coach = :coach",
             ExpressionAttributeValues: {
                 ":coach": {S: coach}
             }
         }
         const result = await this.dynamoDb.send(new QueryCommand(query))
-        return result.Items.map(it => convertItemToWorkout(it))
+        return result.Items.map(it => convertItemToStudent(it))
     }
 
     async findByCoachAndId(coach, id) {
         const query = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             Key: {
                 Coach: { S: coach },
                 Id: { N: `${id}` }
             }
         }
         const result = await this.dynamoDb.send(new GetItemCommand(query))
-        return convertItemToWorkout(result.Item)
+        return convertItemToStudent(result.Item)
     }
 
-    async update(workout) {
+    async update(student) {
         const command = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             Key: {
-                Coach: { S: workout.coach },
-                Id: { N: `${workout.id}` }
+                Coach: { S: student.coach },
+                Id: { N: `${student.id}` }
             },
-            UpdateExpression: "set #n = :name, Description = :description, Videos = :videos",
+            UpdateExpression: "set FirstName = :firstName, LastName = :lastName",
             ExpressionAttributeValues: {
-                ":name": { S: workout.name},
-                ":description": { S: workout.description },
-                ":videos": { SS: workout.videos.map(v => v.link) }
-            },
-            ExpressionAttributeNames: {
-                "#n": "Name"
+                ":firstName": { S: student.firstName},
+                ":lastName": { S: student.lastName }
             },
             ReturnValues: 'ALL_NEW'
         }
@@ -99,7 +93,7 @@ export default class WorkoutRepository {
 
     async delete(coach, id) {
         const command = {
-            TableName: TABLE_WORKOUT,
+            TableName: TABLE_STUDENT,
             Key: {
                 Coach: { S: coach },
                 Id: { N: `${id}` }
