@@ -10,6 +10,10 @@ class Student {
         this.workouts = workouts
     }
 
+    updateWorkouts(workouts) {
+        return new Student(this.id, this.coach, this.firstName, this.lastName, this.pricePlan, workouts)
+    }
+
     toString() {
         return `Student(id=${this.id}, coach=${this.coach}, firstName=${this.firstName}, lastName=${this.lastName}` +
             `, pricePlan=${this.pricePlan}, workouts=${this.workouts})`

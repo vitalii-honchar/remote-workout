@@ -5,7 +5,8 @@ import {
     QueryCommand,
     UpdateItemCommand
 } from "@aws-sdk/client-dynamodb"
-import Student, {WorkoutPricePlan} from "../../../domain/student.mjs"
+import Student, {ScheduledWorkout, WorkoutPricePlan} from "../../../domain/student.mjs"
+import {parse} from "ts-jest"
 
 const TABLE_STUDENT = 'Student'
 
@@ -20,12 +21,27 @@ const createPricePlan = (pricePlan) => {
     return null
 }
 
+const createWorkouts = (workouts) => {
+    if (workouts == null) {
+        return []
+    }
+    return workouts.L.map(workout =>
+        new ScheduledWorkout(
+            parseInt(workout.M.WorkoutId.N),
+            null,
+            new Date(parseInt(workout.M.ScheduledTime.N)),
+            Boolean(workout.M.Sent.BOOL)
+        )
+    )
+}
+
 const convertItemToStudent = (item) => new Student(
     parseInt(item.Id.N),
     item.Coach.S,
     item.FirstName.S,
     item.LastName.S,
-    createPricePlan(item.PricePlan)
+    createPricePlan(item.PricePlan),
+    createWorkouts(item.Workouts)
 )
 
 export default class StudentRepository {
@@ -42,7 +58,8 @@ export default class StudentRepository {
                 Id: {N: `${student.id}`},
                 FirstName: {S: student.firstName},
                 LastName: {S: student.lastName},
-                PricePlan: {M: {}}
+                PricePlan: {M: {}},
+                Workouts: {L: []}
             }
         }
         return this.dynamoDb.send(new PutItemCommand(command))
@@ -79,8 +96,8 @@ export default class StudentRepository {
         const query = {
             TableName: TABLE_STUDENT,
             Key: {
-                Coach: { S: coach },
-                Id: { N: `${id}` }
+                Coach: {S: coach},
+                Id: {N: `${id}`}
             }
         }
         const result = await this.dynamoDb.send(new GetItemCommand(query))
@@ -91,20 +108,32 @@ export default class StudentRepository {
         const command = {
             TableName: TABLE_STUDENT,
             Key: {
-                Coach: { S: student.coach },
-                Id: { N: `${student.id}` }
+                Coach: {S: student.coach},
+                Id: {N: `${student.id}`}
             },
             UpdateExpression: "set FirstName = :firstName, LastName = :lastName, " +
-                "PricePlan.Workouts = :workouts, PricePlan.Price = :price, PricePlan.#name = :name",
-            ExpressionAttributeNames: {
-                "#name": "Name"
-            },
+                "PricePlan = :pricePlan, Workouts = :workouts",
             ExpressionAttributeValues: {
-                ":firstName": { S: student.firstName},
-                ":lastName": { S: student.lastName },
-                ":workouts": { N: student.pricePlan.workouts },
-                ":price": { N: student.pricePlan.price },
-                ":name": { S: student.pricePlan.name }
+                ":firstName": {S: student.firstName},
+                ":lastName": {S: student.lastName},
+                ":pricePlan": {
+                    M: {
+                        "Workouts": {N: `${student.pricePlan.workouts}`},
+                        "Price": {N: `${student.pricePlan.price}`},
+                        "Name": {S: student.pricePlan.name}
+                    },
+                },
+                ":workouts": {
+                    L: student.workouts.map(workout => {
+                        return {
+                            M: {
+                                "WorkoutId": { N: `${workout.workoutId}` },
+                                "ScheduledTime": { N: `${workout.scheduledTime.getTime()}` },
+                                "Sent": { BOOL: `${workout.sent}` }
+                            }
+                        }
+                    })
+                }
             },
             ReturnValues: 'ALL_NEW'
         }
@@ -115,8 +144,8 @@ export default class StudentRepository {
         const command = {
             TableName: TABLE_STUDENT,
             Key: {
-                Coach: { S: coach },
-                Id: { N: `${id}` }
+                Coach: {S: coach},
+                Id: {N: `${id}`}
             }
         }
 

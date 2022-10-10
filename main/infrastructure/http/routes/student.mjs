@@ -14,6 +14,15 @@ export default async (fastify) => {
         return new WorkoutPricePlan(body.pricePlan.workouts, body.pricePlan.price, body.pricePlan.name)
     }
 
+    const createWorkouts = (body) => {
+        if (body.workouts == null) {
+            return null
+        }
+        return body.workouts.map(it =>
+            new ScheduledWorkout(it.workoutId, it.order, new Date(it.scheduledTime), it.sent)
+        )
+    }
+
     const createStudent = (body, coach) => {
         return new Student(
             body.id || null,
@@ -21,7 +30,7 @@ export default async (fastify) => {
             body.firstName,
             body.lastName,
             createPricePlan(body),
-            null
+            createWorkouts(body)
         )
     }
 
@@ -31,12 +40,7 @@ export default async (fastify) => {
 
     fastify.get('/student/:id', async function (request) {
         const {id} = request.params
-        const student = await studentService.findByCoachAndId(httpSession(request).coach, id)
-        student.workouts = [
-            new ScheduledWorkout('1', 10, Date.now(), true),
-            new ScheduledWorkout('2', 20, Date.now(), false)
-        ];
-        return student
+        return await studentService.findByCoachAndId(httpSession(request).coach, id)
     })
 
     fastify.put('/student', async function (request) {

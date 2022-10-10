@@ -1,3 +1,4 @@
+import {ScheduledWorkout} from "../../domain/student.mjs"
 
 export default class StudentService {
 
@@ -22,10 +23,17 @@ export default class StudentService {
         this.log.info(`Created student: student = ${student}`)
     }
 
-    async update(pricePlan) {
-        this.log.info(`Update student: student = ${pricePlan}`)
-        await this.studentRepository.update(pricePlan)
-        this.log.info(`Updated student: student = ${pricePlan}`)
+    async update(student) {
+        this.log.info(`Update student: student = ${student}`)
+
+        const previousStudent = await this.findByCoachAndId(student.coach, student.id)
+        let updateCandidate = student
+        if (JSON.stringify(previousStudent.pricePlan) !== JSON.stringify(student.pricePlan)) {
+            updateCandidate = student.updateWorkouts([])
+        }
+
+        await this.studentRepository.update(updateCandidate)
+        this.log.info(`Updated student: student = ${updateCandidate}`)
     }
 
     async deleteByCoachAndId(coach, id) {
