@@ -5,15 +5,27 @@ import {
     QueryCommand,
     UpdateItemCommand
 } from "@aws-sdk/client-dynamodb"
-import Student from "../../../domain/student.mjs"
+import Student, {WorkoutPricePlan} from "../../../domain/student.mjs"
 
 const TABLE_STUDENT = 'Student'
+
+const createPricePlan = (pricePlan) => {
+    if (pricePlan != null && Object.keys(pricePlan.M).length !== 0) {
+        return new WorkoutPricePlan(
+            parseInt(pricePlan.M.Workouts.N),
+            parseInt(pricePlan.M.Price.N),
+            pricePlan.M.Name.S
+        )
+    }
+    return null
+}
 
 const convertItemToStudent = (item) => new Student(
     parseInt(item.Id.N),
     item.Coach.S,
     item.FirstName.S,
-    item.LastName.S
+    item.LastName.S,
+    createPricePlan(item.PricePlan)
 )
 
 export default class StudentRepository {
@@ -29,7 +41,8 @@ export default class StudentRepository {
                 Coach: {S: student.coach},
                 Id: {N: `${student.id}`},
                 FirstName: {S: student.firstName},
-                LastName: {S: student.lastName}
+                LastName: {S: student.lastName},
+                PricePlan: {M: {}}
             }
         }
         return this.dynamoDb.send(new PutItemCommand(command))
@@ -81,10 +94,17 @@ export default class StudentRepository {
                 Coach: { S: student.coach },
                 Id: { N: `${student.id}` }
             },
-            UpdateExpression: "set FirstName = :firstName, LastName = :lastName",
+            UpdateExpression: "set FirstName = :firstName, LastName = :lastName, " +
+                "PricePlan.Workouts = :workouts, PricePlan.Price = :price, PricePlan.#name = :name",
+            ExpressionAttributeNames: {
+                "#name": "Name"
+            },
             ExpressionAttributeValues: {
                 ":firstName": { S: student.firstName},
-                ":lastName": { S: student.lastName }
+                ":lastName": { S: student.lastName },
+                ":workouts": { N: student.pricePlan.workouts },
+                ":price": { N: student.pricePlan.price },
+                ":name": { S: student.pricePlan.name }
             },
             ReturnValues: 'ALL_NEW'
         }

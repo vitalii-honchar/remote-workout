@@ -7,8 +7,22 @@ export default async (fastify) => {
     const studentService = diContainer.resolve('studentService')
     const httpSession = (request) => request.diScope.resolve('httpSession')
 
+    const createPricePlan = (body) => {
+        if (body.pricePlan == null) {
+            return null
+        }
+        return new WorkoutPricePlan(body.pricePlan.workouts, body.pricePlan.price, body.pricePlan.name)
+    }
+
     const createStudent = (body, coach) => {
-        return new Student(body.id || null, coach, body.firstName, body.lastName)
+        return new Student(
+            body.id || null,
+            coach,
+            body.firstName,
+            body.lastName,
+            createPricePlan(body),
+            null
+        )
     }
 
     fastify.get('/student', async function (request) {
@@ -22,7 +36,6 @@ export default async (fastify) => {
             new ScheduledWorkout('1', 10, Date.now(), true),
             new ScheduledWorkout('2', 20, Date.now(), false)
         ];
-        student.pricePlan = new WorkoutPricePlan(10, 1000)
         return student
     })
 

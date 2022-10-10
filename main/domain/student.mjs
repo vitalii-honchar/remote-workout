@@ -18,13 +18,14 @@ class Student {
 
 class WorkoutPricePlan {
 
-    constructor(workouts, price) {
+    constructor(workouts, price, name) {
         this.workouts = workouts
         this.price = price
+        this.name = name
     }
 
     toString() {
-        return `WorkoutPricePlan(workouts=${this.workouts}, price=${this.price})`
+        return `WorkoutPricePlan(workouts=${this.workouts}, price=${this.price}, name=${this.name})`
     }
 }
 
