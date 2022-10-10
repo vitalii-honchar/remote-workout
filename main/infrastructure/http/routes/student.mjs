@@ -1,5 +1,6 @@
 import {diContainer} from "@fastify/awilix";
 import Student from "../../../domain/student.mjs"
+import {ScheduledWorkout, WorkoutPricePlan} from "../../../domain/student.mjs"
 import {successResponse} from "../../../lib/responses.mjs"
 
 export default async (fastify) => {
@@ -16,7 +17,13 @@ export default async (fastify) => {
 
     fastify.get('/student/:id', async function (request) {
         const {id} = request.params
-        return await studentService.findByCoachAndId(httpSession(request).coach, id)
+        const student = await studentService.findByCoachAndId(httpSession(request).coach, id)
+        student.workouts = [
+            new ScheduledWorkout('1', 10, Date.now(), true),
+            new ScheduledWorkout('2', 20, Date.now(), false)
+        ];
+        student.pricePlan = new WorkoutPricePlan(10, 1000)
+        return student
     })
 
     fastify.put('/student', async function (request) {
